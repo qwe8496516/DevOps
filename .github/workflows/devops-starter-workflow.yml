@@ -7,7 +7,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: "d0957024bmi"    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: "Application"      # set this to the path to your web app project, defaults to the repository root
-  PYTHON_VERSION: '3.10'                       # set this to the python version to use
+  PYTHON_VERSION: '3.7.5'                       # set this to the python version to use
   RESOURCEGROUPNAME: "d0957024bmi-rg"
   LOCATION: "Japan East"
   HOSTINGPLANNAME: "d0957024bmi-plan"
