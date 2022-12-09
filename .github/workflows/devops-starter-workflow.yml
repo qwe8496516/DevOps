@@ -5,23 +5,23 @@ on:
       - master
 
 env:
-  AZURE_WEBAPP_NAME: "d0957024bmi"    # set this to your application's name
+  AZURE_WEBAPP_NAME: "fcu-bmi-calculator"    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: "Application"      # set this to the path to your web app project, defaults to the repository root
-  PYTHON_VERSION: '3.7.5'                       # set this to the python version to use
-  RESOURCEGROUPNAME: "d0957024bmi-rg"
-  LOCATION: "Japan East"
-  HOSTINGPLANNAME: "d0957024bmi-plan"
-  APPINSIGHTLOCATION: "Japan East"
-  SKU: "S1 Standard"
+  PYTHON_VERSION: '3.10'                       # set this to the python version to use
+  RESOURCEGROUPNAME: "fcu-bmi-calculator-rg"
+  LOCATION: "East Asia"
+  HOSTINGPLANNAME: "fcu-bmi-calculator-plan"
+  APPINSIGHTLOCATION: "East Asia"
+  SKU: "B1"
+  SONAR_HOST_URL: "http://20.194.33.30"
 
 jobs:
   Build:
     name: Build and Run tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
@@ -34,8 +34,15 @@ jobs:
       continue-on-error: false
       run: |
         mkdir testresults
-        pip install pytest && pytest Tests/unit_tests --junitxml=./testresults/test-results.xml && pip install pycmd && py.cleanup Tests/
-
+        pip install pytest && pip install pytest-cov && pytest --cov=./ --cov-config=.coveragerc --cov-report term-missing Tests/unit_tests --junitxml=./testresults/test-results.xml && pip install pycmd && py.cleanup Tests/
+    
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
     # Uploading unit test results to artifact store
     - name: Upload unit test results to Artifact
       continue-on-error: false
@@ -141,9 +148,8 @@ jobs:
     runs-on: windows-latest
     needs: Deploy
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
@@ -152,7 +158,7 @@ jobs:
       continue-on-error: false
       run: |
         mkdir functionaltestresults
-        pip install wheel && pip install selenium && pip install pytest==4.6.11 && cd ./Tests && python -m pytest functional_tests/ --webAppUrl=https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/ --junitxml=../functionaltestresults/functional-test-results.xml
+        pip install wheel && pip install selenium==3.141.0 && pip install pytest==4.6.11 && cd ./Tests && python -m pytest functional_tests/ --webAppUrl=https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/ --junitxml=../functionaltestresults/functional-test-results.xml
 
     # Uploading functional test results to artifact store
     - name: Upload functional test results to Artifact
