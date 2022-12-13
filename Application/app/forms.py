@@ -6,6 +6,26 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 
+def clean(self):
+    cd = self.cleaned_data
+
+    try:
+        weight = float(cd.get('weight'))
+        height = float(cd.get('height'))
+
+        height_condition = (height > 2.5) or (height <= 0)
+        if height_condition:
+            self.add_error('height', "請輸入合理範圍的身高!")
+
+        weight_condition = (weight > 200) or (weight <= 15)
+        if weight_condition:
+            self.add_error('weight', "請輸入合理範圍的體重!")
+    except:
+        self.add_error('weight', "請輸入數字!")
+
+    return cd
+
+
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
     username = forms.CharField(max_length=254,
