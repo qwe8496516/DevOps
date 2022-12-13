@@ -41,9 +41,9 @@ class BmiCalculatorTest(TestCase):
     def test_bmi_not_test(self):
         """Tests bmi not Test."""
         height = 1.6
-        weight = [65,70,80,110]
-        result_bmi = [25.39,27.34,29.3,42.97]
-        result_mean = ['過重','輕度肥胖','中度肥胖','重度肥胖']
+        weight = [30,65,70,80,110]
+        result_bmi = [11.72,25.39,27.34,29.3,42.97]
+        result_mean = ['過輕','過重','輕度肥胖','中度肥胖','重度肥胖']
         for i in range(len(weight)):
             bmi, bmi_means = bmi_calculator(height, weight[i])
             self.assertEqual(bmi, result_bmi[i])
