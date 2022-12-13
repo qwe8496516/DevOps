@@ -13,7 +13,7 @@ env:
   HOSTINGPLANNAME: "d0957024bmi-plan"
   APPINSIGHTLOCATION: "Japan East"
   SKU: "S1 Standard"
-  SONAR_HOST_URL: "20.70.210.172/setup"
+  SONAR_HOST_URL: "20.70.210.172"
 
 jobs:
   Build:
