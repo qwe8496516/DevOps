@@ -13,6 +13,7 @@ env:
   HOSTINGPLANNAME: "d0957024bmi-plan"
   APPINSIGHTLOCATION: "Japan East"
   SKU: "S1 Standard"
+  SONAR_HOST_URL: "20.70.210.172"
 
 jobs:
   Build:
@@ -34,6 +35,12 @@ jobs:
       run: |
         mkdir testresults
         pip install pytest && pytest Tests/unit_tests --junitxml=./testresults/test-results.xml && pip install pycmd && py.cleanup Tests/
+    - uses: actions/checkout@v2
+      with: 
+        fetch-depth: 0
+    - uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # Uploading unit test results to artifact store
     - name: Upload unit test results to Artifact
